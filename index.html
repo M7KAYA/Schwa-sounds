@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Passive Voice</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #3498db 0%, #6dd5fa 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        width: 420px;
+        background: #ffffff;
+        padding: 30px 25px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      #question-text {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #333;
+        padding: 14px 20px;
+        background-color: #e3f2fd;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        display: inline-block;
+        max-width: 100%;
+        line-height: 1.4;
+        user-select: none;
+      }
+      .btn-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 15px;
+      }
+      button {
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #3498db;
+        color: white;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+      button:hover {
+        background-color: #2980b9;
+        transform: scale(1.02);
+      }
+      button:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+      .correct {
+        background-color: #2ecc71 !important;
+      }
+      .wrong {
+        background-color: #e74c3c !important;
+      }
+      .answer-btn:last-of-type {
+        margin-bottom: 10px;
+      }
+      #question-number {
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+      }
+      #result-box {
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 12px;
+        background-color: #dfefff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 id="quiz-title">Passive Voice</h2>
+
+      <div id="start-box">
+        <button id="start-btn">Start</button>
+      </div>
+      <div id="quiz-box" class="hide">
+        <div id="question-number"></div>
+        <div id="question-text"></div>
+        <div id="answer-buttons" class="btn-grid"></div>
+        <button id="next-btn" disabled>Next</button>
+      </div>
+      <div id="result-box" class="hide">
+        <h3>Your Score</h3>
+        <p id="score-text"></p>
+        <button id="try-again-btn">Try Again</button>
+      </div>
+    </div>
+
+    <script>
+      const allQuestions = [
+        {
+          question: "What is the schwa sound?",
+          options: [
+            "A rising tone",
+            "A strong, stressed vowel",
+            "A short, weak, unstressed vowel sound",
+            "A consonant sound",
+          ],
+          correctIndex: 2,
+        },
+        {
+          question: "What is the phonetic symbol for the schwa sound?",
+          options: ["/e/", "/ə/", "/u:/", "/i:/"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "Which of these words has a schwa sound in the first syllable?",
+          options: ["Banana", "Around", "Supply", "All of the above"],
+          correctIndex: 3,
+        },
+        {
+          question:
+            "Which part of the word 'support' contains the schwa sound?",
+          options: [
+            "The first syllable",
+            "The second syllable",
+            "Both syllables",
+            "Neither",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "Which of the following words does NOT contain a schwa sound?",
+          options: ["Teacher", "Dinner", "Cat", "Doctor"],
+          correctIndex: 2,
+        },
+        {
+          question: "In connected speech, schwa often replaces:",
+          options: [
+            "A stressed vowel",
+            "A silent consonant",
+            "An unstressed vowel",
+            "A diphthong",
+          ],
+          correctIndex: 2,
+        },
+        {
+          question: "The schwa sound is common in:",
+          options: [
+            "Function words like “a”, “an”, “the”",
+            "Main verbs only",
+            "Past tense endings",
+            "Prefixes only",
+          ],
+          correctIndex: 0,
+        },
+        {
+          question:
+            "What is the pronunciation of the ‘o’ in the word ‘harmony’?",
+          options: ["/ou/", "/o/", "/ə/", "/ɔ:/"],
+          correctIndex: 2,
+        },
+        {
+          question: "Schwa can appear in how many positions in a word?",
+          options: [
+            "Beginning only",
+            "Middle only",
+            "End only",
+            "Any position",
+          ],
+          correctIndex: 3,
+        },
+        {
+          question:
+            "What happens to vowel sounds in unstressed syllables in English?",
+          options: [
+            "They are deleted",
+            "They change into schwa",
+            "They become consonants",
+            "They are pronounced more clearly",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "The schwa sound is the most common vowel sound in English.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: "All stressed syllables contain the schwa sound.",
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "In the word ‘problem’, the second syllable is pronounced with a schwa.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            "Schwa sound can appear in both British and American English.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: "Schwa is a type of consonant sound.",
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "In fast speech, native speakers often reduce vowels to schwa.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            "Schwa is never written in spelling; it only appears in pronunciation.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: "The schwa sound can appear in plural endings like ‘-es’.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            "In the word “family”, the second syllable is always pronounced as /i:/.",
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "All vowel letters can represent the schwa sound depending on stress.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+      ];
+
+      let currentQuestionIndex = 0;
+      let score = 0;
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+      shuffleArray(allQuestions);
+
+      const startBtn = document.getElementById("start-btn");
+      const nextBtn = document.getElementById("next-btn");
+      const tryAgainBtn = document.getElementById("try-again-btn");
+      const quizBox = document.getElementById("quiz-box");
+      const startBox = document.getElementById("start-box");
+      const questionNumberElement = document.getElementById("question-number");
+      const questionText = document.getElementById("question-text");
+      const answerButtons = document.getElementById("answer-buttons");
+      const resultBox = document.getElementById("result-box");
+      const scoreText = document.getElementById("score-text");
+
+      startBtn.addEventListener("click", startQuiz);
+      nextBtn.addEventListener("click", () => {
+        currentQuestionIndex++;
+        setNextQuestion();
+      });
+      tryAgainBtn.addEventListener("click", startQuiz);
+
+      function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        startBox.classList.add("hide");
+        resultBox.classList.add("hide");
+        quizBox.classList.remove("hide");
+        setNextQuestion();
+      }
+
+      function setNextQuestion() {
+        resetState();
+        if (currentQuestionIndex < allQuestions.length) {
+          showQuestion(allQuestions[currentQuestionIndex]);
+        } else {
+          showResult();
+        }
+      }
+
+      function showQuestion(questionObj) {
+        questionNumberElement.textContent = `Question ${
+          currentQuestionIndex + 1
+        } of ${allQuestions.length}`;
+        questionText.textContent = questionObj.question;
+
+        questionObj.options.forEach((option, index) => {
+          const button = document.createElement("button");
+          button.textContent = option;
+          button.classList.add("answer-btn");
+          button.addEventListener("click", () =>
+            selectAnswer(button, index === questionObj.correctIndex)
+          );
+          answerButtons.appendChild(button);
+        });
+      }
+
+      function resetState() {
+        nextBtn.disabled = true;
+        answerButtons.innerHTML = "";
+      }
+
+      function selectAnswer(button, isCorrect) {
+        const buttons = answerButtons.querySelectorAll("button");
+        buttons.forEach((btn) => {
+          btn.disabled = true;
+        });
+
+        if (isCorrect) {
+          button.classList.add("correct");
+          score++;
+        } else {
+          button.classList.add("wrong");
+          const correctButton =
+            buttons[allQuestions[currentQuestionIndex].correctIndex];
+          correctButton.classList.add("correct");
+        }
+
+        nextBtn.disabled = false;
+      }
+
+      function showResult() {
+        quizBox.classList.add("hide");
+        resultBox.classList.remove("hide");
+        scoreText.textContent = `${score} out of ${allQuestions.length} correct`;
+      }
+    </script>
+  </body>
+</html>
